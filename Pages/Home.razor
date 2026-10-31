@@ -1,0 +1,88 @@
+﻿@page "/"
+
+
+<PageTitle>Leap Year Checker</PageTitle>
+
+<div class="checker">
+    <h1>Leap Year Checker</h1>
+    <p>Enter a year to find out whether it is a leap year.</p>
+
+    <label for="year">Year</label>
+    <input id="year"
+           type="text"
+           inputmode="numeric"
+           @bind="yearInput"
+           placeholder="For example, 2028" />
+
+    <button @onclick="CheckYear">Check year</button>
+
+    <p role="status">@result</p>
+</div>
+
+<style>
+    .checker {
+        max-width: 420px;
+        margin: 2rem auto;
+        padding: 1.5rem;
+        background: #fce4f3;
+        border-radius: 16px;
+    }
+
+    .checker input,
+    .checker button {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        font-size: 1rem;
+    }
+
+    .checker button {
+        background: #800080;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+</style>
+
+@code {
+    private string yearInput = "";
+    private string result = "";
+
+    private void CheckYear()
+    {
+        // Validate input instead of crashing on invalid text.
+        if (!int.TryParse(yearInput, out int year)
+            || year < 1 || year > 9999)
+        {
+            result = "Please enter a whole year from 1 to 9999.";
+            return;
+        }
+
+        bool leapYear = IsLeapYear(year);
+        int currentYear = DateTime.Now.Year;
+
+        string verb;
+
+        if (year < currentYear)
+            verb = "was";
+        else if (year > currentYear)
+            verb = "will be";
+        else
+            verb = "is";
+
+        string description = leapYear
+            ? "a leap year"
+            : "not a leap year";
+
+        result = $"{year} {verb} {description}.";
+    }
+
+    private static bool IsLeapYear(int year)
+    {
+        return year % 400 == 0
+            || (year % 4 == 0 && year % 100 != 0);
+    }
+}
